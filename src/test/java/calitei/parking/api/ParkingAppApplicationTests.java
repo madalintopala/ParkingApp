@@ -1,4 +1,4 @@
-package calitei.ParkingApp;
+package calitei.parking.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

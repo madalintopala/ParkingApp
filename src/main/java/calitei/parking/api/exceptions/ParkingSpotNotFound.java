@@ -1,4 +1,4 @@
-package calitei.ParkingApp.exceptions;
+package calitei.parking.api.exceptions;
 
 public class ParkingSpotNotFound extends Exception{
 

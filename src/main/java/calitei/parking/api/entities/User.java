@@ -1,4 +1,4 @@
-package calitei.ParkingApp.entities;
+package calitei.parking.api.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;

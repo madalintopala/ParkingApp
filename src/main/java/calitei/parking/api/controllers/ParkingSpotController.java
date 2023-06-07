@@ -1,13 +1,13 @@
-package calitei.ParkingApp.controllers;
+package calitei.parking.api.controllers;
 
-import calitei.ParkingApp.entities.ParkingSpot;
-import calitei.ParkingApp.entities.User;
-import calitei.ParkingApp.exceptions.ParkingSpotNotFound;
-import calitei.ParkingApp.exceptions.ParkingSpotNotFreeException;
-import calitei.ParkingApp.exceptions.UserAlreadyExistsException;
-import calitei.ParkingApp.exceptions.UserNotFoundException;
-import calitei.ParkingApp.services.ParkingSpotService;
-import calitei.ParkingApp.services.UserService;
+import calitei.parking.api.entities.ParkingSpot;
+import calitei.parking.api.entities.User;
+import calitei.parking.api.exceptions.ParkingSpotNotFound;
+import calitei.parking.api.exceptions.ParkingSpotNotFreeException;
+import calitei.parking.api.exceptions.UserAlreadyExistsException;
+import calitei.parking.api.exceptions.UserNotFoundException;
+import calitei.parking.api.services.ParkingSpotService;
+import calitei.parking.api.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600, methods = {RequestMethod.GET, RequestMethod.POST})
 @RequestMapping("/parkingspot")
 public class ParkingSpotController {
     private final ParkingSpotService parkingSpotService;

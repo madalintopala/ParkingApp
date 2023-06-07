@@ -1,6 +1,6 @@
-package calitei.ParkingApp.repositories;
+package calitei.parking.api.repositories;
 
-import calitei.ParkingApp.entities.ParkingSpot;
+import calitei.parking.api.entities.ParkingSpot;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

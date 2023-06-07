@@ -1,15 +1,14 @@
-package calitei.ParkingApp.services;
+package calitei.parking.api.services;
 
 
-import calitei.ParkingApp.entities.User;
-import calitei.ParkingApp.exceptions.UserAlreadyExistsException;
-import calitei.ParkingApp.exceptions.UserNotFoundException;
-import calitei.ParkingApp.repositories.UserRepository;
+import calitei.parking.api.entities.User;
+import calitei.parking.api.exceptions.UserAlreadyExistsException;
+import calitei.parking.api.exceptions.UserNotFoundException;
+import calitei.parking.api.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 

@@ -1,10 +1,10 @@
-package calitei.ParkingApp.services;
+package calitei.parking.api.services;
 
-import calitei.ParkingApp.entities.ParkingSpot;
-import calitei.ParkingApp.entities.User;
-import calitei.ParkingApp.exceptions.ParkingSpotNotFound;
-import calitei.ParkingApp.exceptions.ParkingSpotNotFreeException;
-import calitei.ParkingApp.repositories.ParkingSpotRepository;
+import calitei.parking.api.entities.ParkingSpot;
+import calitei.parking.api.entities.User;
+import calitei.parking.api.exceptions.ParkingSpotNotFound;
+import calitei.parking.api.exceptions.ParkingSpotNotFreeException;
+import calitei.parking.api.repositories.ParkingSpotRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

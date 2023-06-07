@@ -1,26 +1,30 @@
-package calitei.ParkingApp.controllers;
+package calitei.parking.api.controllers;
 
-import calitei.ParkingApp.entities.User;
-import calitei.ParkingApp.exceptions.UserAlreadyExistsException;
-import calitei.ParkingApp.exceptions.UserNotFoundException;
-import calitei.ParkingApp.services.UserService;
-import jakarta.websocket.server.PathParam;
+import calitei.parking.api.entities.User;
+import calitei.parking.api.exceptions.UserAlreadyExistsException;
+import calitei.parking.api.exceptions.UserNotFoundException;
+import calitei.parking.api.models.user.LoginRequest;
+import calitei.parking.api.services.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*", maxAge = 3600, methods = {RequestMethod.GET, RequestMethod.POST})
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @PostMapping("/create")
     public void createUser(@RequestBody User user) throws UserAlreadyExistsException {
         userService.createUser(user);
+    }
+
+    @PostMapping("/login")
+    public User logInUserByEmailOrPhoneNumber(@RequestBody LoginRequest loginRequest) throws UserNotFoundException {
+        return userService.logInUserByEmailOrPhoneNumber(loginRequest.getEmailOrPhoneNumber(), loginRequest.getPassword());
     }
 
     @GetMapping("/getAll")
