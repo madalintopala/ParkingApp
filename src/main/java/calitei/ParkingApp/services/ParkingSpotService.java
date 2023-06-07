@@ -97,4 +97,8 @@ public class ParkingSpotService {
         parkingSpot.setReservedByName(null);
         parkingSpotRepository.save(parkingSpot);
     }
+
+    public List<ParkingSpot> getFreeParkingSpots(){
+        return parkingSpotRepository.getParkingSpotByFreeToReserve(true);
+    }
 }

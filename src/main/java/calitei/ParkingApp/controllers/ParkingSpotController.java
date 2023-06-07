@@ -142,4 +142,10 @@ public class ParkingSpotController {
         }
         parkingSpotService.advertiseByOwner(parkingSpot, freeUntil, advertisedAsFree);
     }
+
+    @GetMapping
+    @RequestMapping("/freeParkingSpots")
+    public List<ParkingSpot> getFreeParkingSpots(){
+        return parkingSpotService.getFreeParkingSpots();
+    }
 }
