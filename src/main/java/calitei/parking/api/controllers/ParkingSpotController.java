@@ -2,10 +2,7 @@ package calitei.parking.api.controllers;
 
 import calitei.parking.api.entities.ParkingSpot;
 import calitei.parking.api.entities.User;
-import calitei.parking.api.exceptions.ParkingSpotNotFound;
-import calitei.parking.api.exceptions.ParkingSpotNotFreeException;
-import calitei.parking.api.exceptions.UserAlreadyExistsException;
-import calitei.parking.api.exceptions.UserNotFoundException;
+import calitei.parking.api.error.exceptions.*;
 import calitei.parking.api.services.ParkingSpotService;
 import calitei.parking.api.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -44,7 +41,7 @@ public class ParkingSpotController {
 
     @PostMapping
     @RequestMapping("/create")
-    public void createParkingSpot(@RequestBody ParkingSpot parkingSpot){
+    public void createParkingSpot(@RequestBody ParkingSpot parkingSpot) throws AlreadyExistsException {
         parkingSpotService.createParkingSpot(parkingSpot);
     }
 

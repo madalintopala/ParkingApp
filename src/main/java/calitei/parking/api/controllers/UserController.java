@@ -1,8 +1,8 @@
 package calitei.parking.api.controllers;
 
 import calitei.parking.api.entities.User;
-import calitei.parking.api.exceptions.UserAlreadyExistsException;
-import calitei.parking.api.exceptions.UserNotFoundException;
+import calitei.parking.api.error.exceptions.UserAlreadyExistsException;
+import calitei.parking.api.error.exceptions.UserNotFoundException;
 import calitei.parking.api.models.user.LoginRequest;
 import calitei.parking.api.services.UserService;
 import lombok.RequiredArgsConstructor;

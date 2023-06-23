@@ -2,8 +2,11 @@ package calitei.parking.api.services;
 
 import calitei.parking.api.entities.ParkingSpot;
 import calitei.parking.api.entities.User;
-import calitei.parking.api.exceptions.ParkingSpotNotFound;
-import calitei.parking.api.exceptions.ParkingSpotNotFreeException;
+import calitei.parking.api.error.ExceptionUtility;
+import calitei.parking.api.error.exceptions.AlreadyExistsException;
+import calitei.parking.api.error.exceptions.ParkingSpotNotFound;
+import calitei.parking.api.error.exceptions.ParkingSpotNotFreeException;
+import calitei.parking.api.repositories.MethodType;
 import calitei.parking.api.repositories.ParkingSpotRepository;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +23,11 @@ public class ParkingSpotService {
 
     }
 
-    public void createParkingSpot(ParkingSpot parkingSpot){
+    public void createParkingSpot(ParkingSpot parkingSpot) throws AlreadyExistsException {
+        if(parkingSpotRepository.existsByLotNumber(parkingSpot.getLotNumber())){
+            throw new AlreadyExistsException(ExceptionUtility
+                    .createErrorMessage("ParkingSpot", Integer.toString(parkingSpot.getLotNumber()), MethodType.CREATE));
+        }
         parkingSpotRepository.save(parkingSpot);
     }
 
@@ -50,7 +57,8 @@ public class ParkingSpotService {
 
     public ParkingSpot getParkingSpotByLotNumber(int lotNumber) throws ParkingSpotNotFound {
         return parkingSpotRepository.findByLotNumber(lotNumber)
-                .orElseThrow(()-> new ParkingSpotNotFound("ParkingSpot with id: "+ lotNumber +" was not found!"));
+                .orElseThrow(()-> new ParkingSpotNotFound(ExceptionUtility
+                        .createErrorMessage("ParkingSpot", Integer.toString(lotNumber), MethodType.UPDATE)));
     }
 
     public void reserveParkingSpot(User reservee, int lotNumber, LocalDateTime reservedUntil) throws ParkingSpotNotFound, ParkingSpotNotFreeException {

@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface ParkingSpotRepository extends JpaRepository<ParkingSpot, Integer> {
 
     public Optional<ParkingSpot> findByLotNumber(int lotNumber);
+    public boolean existsByLotNumber(int lotNumber);
     public List<ParkingSpot> getParkingSpotByFreeToReserve(boolean free);
 }

@@ -2,8 +2,10 @@ package calitei.parking.api.services;
 
 
 import calitei.parking.api.entities.User;
-import calitei.parking.api.exceptions.UserAlreadyExistsException;
-import calitei.parking.api.exceptions.UserNotFoundException;
+import calitei.parking.api.error.ExceptionUtility;
+import calitei.parking.api.error.exceptions.UserAlreadyExistsException;
+import calitei.parking.api.error.exceptions.UserNotFoundException;
+import calitei.parking.api.repositories.MethodType;
 import calitei.parking.api.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +24,8 @@ public class UserService {
 
     public void createUser(User user) throws UserAlreadyExistsException {
         if(userRepository.existsByEmail(user.getEmail())) {
-            throw new UserAlreadyExistsException(String.format("User with email %s already exists!", user.getEmail()));
+            throw new UserAlreadyExistsException(ExceptionUtility
+                    .createErrorMessage("User", user.getEmail(), MethodType.CREATE));
         }
         user.setCreatedAt(LocalDateTime.now());
         userRepository.save(user);
@@ -33,17 +36,19 @@ public class UserService {
     }
 
     public User getUserByLastName(String lastName) throws UserNotFoundException {
-        return userRepository.getUserByLastName(lastName).orElseThrow(() -> new UserNotFoundException("User not found!"));
+        return userRepository.getUserByLastName(lastName)
+                .orElseThrow(() -> new UserNotFoundException(ExceptionUtility
+                        .createErrorMessage("User", lastName, MethodType.UPDATE)));
     }
 
     public User getUserByEmail(String email) throws UserNotFoundException {
         return userRepository.getUserByEmail(email).orElseThrow(() ->
-                new UserNotFoundException(String.format("User with email %s not found!", email)));
+                new UserNotFoundException(ExceptionUtility.createErrorMessage("User", email, MethodType.UPDATE)));
     }
 
     public User getUserByPhoneNumber(String phoneNumber) throws UserNotFoundException {
         return userRepository.getUserByPhoneNumber(phoneNumber).orElseThrow(() ->
-                new UserNotFoundException(String.format("User with phone number %s not found!", phoneNumber)));
+                new UserNotFoundException(ExceptionUtility.createErrorMessage("User", phoneNumber, MethodType.UPDATE)));
     }
 
     public User logInUserByEmailOrPhoneNumber(String emailOrPhoneNumber, String password) throws UserNotFoundException {
@@ -56,10 +61,14 @@ public class UserService {
 
         User user = null;
         if (phonePattern.matcher(emailOrPhoneNumber).matches()) {
-            user = userRepository.getUserByPhoneNumber(emailOrPhoneNumber).orElseThrow(() -> new UserNotFoundException("User not found!"));
+            user = userRepository.getUserByPhoneNumber(emailOrPhoneNumber)
+                    .orElseThrow(() -> new UserNotFoundException(ExceptionUtility
+                            .createErrorMessage("User", emailOrPhoneNumber, MethodType.UPDATE)));
 
         } else if (emailRegexPattern.matcher(emailOrPhoneNumber).matches()) {
-            user = userRepository.getUserByEmail(emailOrPhoneNumber).orElseThrow(() -> new UserNotFoundException("User not found!"));
+            user = userRepository.getUserByEmail(emailOrPhoneNumber)
+                    .orElseThrow(() -> new UserNotFoundException(ExceptionUtility
+                    .createErrorMessage("User", emailOrPhoneNumber, MethodType.UPDATE)));
         }
         if (user.getPassword().equals(password)) {
             return user;

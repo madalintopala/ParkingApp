@@ -1,4 +1,4 @@
-package calitei.parking.api.exceptions;
+package calitei.parking.api.error.exceptions;
 
 public class ParkingSpotNotFreeException extends Exception{
     public ParkingSpotNotFreeException(String message) {
