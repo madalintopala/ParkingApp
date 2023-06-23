@@ -3,6 +3,7 @@ package calitei.parking.api.controllers;
 import calitei.parking.api.entities.ParkingSpot;
 import calitei.parking.api.entities.User;
 import calitei.parking.api.error.exceptions.*;
+import calitei.parking.api.models.parkingSpot.RequestParkingSpotUntil;
 import calitei.parking.api.services.ParkingSpotService;
 import calitei.parking.api.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -47,98 +48,35 @@ public class ParkingSpotController {
 
 
     @PostMapping
-    @RequestMapping("/setOwner")
-    public void setOwner(@RequestBody String jsonString) throws ParkingSpotNotFound, UserNotFoundException, JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonNode = mapper.readTree(jsonString);
-        User owner = userService.getUserByEmail(jsonNode.get("email").asText());
-        parkingSpotService.setOwner(owner, jsonNode.get("lotNumber").asInt());
+    @RequestMapping("/setOwner/{lotNumber}")
+    public void setOwner(@RequestBody String email, @PathVariable int lotNumber) throws ParkingSpotNotFound, UserNotFoundException, JsonProcessingException, AlreadyExistsException {
+        User owner = userService.getUserByEmail(email);
+        parkingSpotService.setOwner(owner, lotNumber);
     }
 
-    @PostMapping
-    @RequestMapping("/reserveExistingUser")
-    public void reserveParkingSpotExistingUser(@RequestBody String jsonString) throws
-            ParkingSpotNotFound, JsonProcessingException, UserNotFoundException, ParkingSpotNotFreeException {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonNode = mapper.readTree(jsonString);
-        String email = jsonNode.get("email").asText();
-        int lotNumber = jsonNode.get("lotNumber").asInt();
-        LocalDateTime reservedUntil = LocalDateTime.of(jsonNode.get("year").asInt(),
-                jsonNode.get("month").asInt(),
-                jsonNode.get("day").asInt(),
-                jsonNode.get("hour").asInt(),
-                jsonNode.get("minute").asInt(),
-                jsonNode.get("seconds").asInt());
-        User reservee = userService.getUserByEmail(email);
-        parkingSpotService.reserveParkingSpot(reservee, lotNumber, reservedUntil);
+//     TODO: need to implement action to get the currently logged in details first
+//    @PostMapping
+//    @RequestMapping("/reserveExistingUser")
+//    public void reserveParkingSpotExistingUser(@RequestBody RequestParkingSpotUntil requestParkingSpotUntil) throws
+//            ParkingSpotNotFound, UserNotFoundException, ParkingSpotNotFreeException {
+//
+////        User reservee = get currently logged in user
+////        parkingSpotService.reserveParkingSpot(reservee, requestParkingSpotUntil);
+//
+//    }
 
-    }
 
-    @Transactional // if the parkingSpot is not successfully reserved, delete newly created user
-    @PostMapping
-    @RequestMapping("/reserveNewUser")
-    public void reserveParkingSpotNewUser(@RequestBody String jsonString) throws
-            ParkingSpotNotFound, JsonProcessingException, UserAlreadyExistsException, ParkingSpotNotFreeException {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonNode = mapper.readTree(jsonString);
-        User reservee = new User();
-        reservee.setFirstName(jsonNode.get("firstName").asText());
-        reservee.setLastName(jsonNode.get("lastName").asText());
-        reservee.setEmail(jsonNode.get("email").asText());
-        reservee.setPassword(jsonNode.get("password").asText());
-        reservee.setPhoneNumber(jsonNode.get("phoneNumber").asText());
-        int lotNumber = jsonNode.get("lotNumber").asInt();
-        LocalDateTime reservedUntil = LocalDateTime.of(jsonNode.get("year").asInt(),
-                jsonNode.get("month").asInt(),
-                jsonNode.get("day").asInt(),
-                jsonNode.get("hour").asInt(),
-                jsonNode.get("minute").asInt(),
-                jsonNode.get("seconds").asInt());
-        userService.createUser(reservee);
-        parkingSpotService.reserveParkingSpot(reservee, lotNumber, reservedUntil);
-
-    }
 
     @PostMapping
     @RequestMapping("/setFree")
-    public void setFreeParkingSpot(@RequestBody String jsonString) throws JsonProcessingException, ParkingSpotNotFound {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonNode = mapper.readTree(jsonString);
-        int lotNumber = jsonNode.get("lotNumber").asInt();
-        ParkingSpot parkingSpot = getParkingSpotByLotNumber(lotNumber);
-        LocalDateTime freeUntil = null;
-        try{
-            freeUntil = LocalDateTime.of(jsonNode.get("year").asInt(),
-                    jsonNode.get("month").asInt(),
-                    jsonNode.get("day").asInt(),
-                    jsonNode.get("hour").asInt(),
-                    jsonNode.get("minute").asInt(),
-                    jsonNode.get("seconds").asInt());
-        }catch(NullPointerException e){
-            freeUntil = parkingSpot.getAdvertiseAsFreeUntil();
-        }
-
-        parkingSpotService.setFreeParkingSpot(parkingSpot, freeUntil);
+    public void setFreeParkingSpot(@RequestBody int lotNumber) throws ParkingSpotNotFound {
+        parkingSpotService.setFreeParkingSpot(lotNumber);
     }
 
     @PostMapping
     @RequestMapping("/advertiseByOwner")
-    public void advertiseByOwner(@RequestBody String jsonString) throws JsonProcessingException, ParkingSpotNotFound {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode jsonNode = mapper.readTree(jsonString);
-        boolean advertisedAsFree = jsonNode.get("advertisedAsFree").asBoolean();
-        int lotNumber = jsonNode.get("lotNumber").asInt();
-        ParkingSpot parkingSpot = getParkingSpotByLotNumber(lotNumber);
-        LocalDateTime freeUntil = null;
-        if (advertisedAsFree) {
-            freeUntil = LocalDateTime.of(jsonNode.get("year").asInt(),
-                    jsonNode.get("month").asInt(),
-                    jsonNode.get("day").asInt(),
-                    jsonNode.get("hour").asInt(),
-                    jsonNode.get("minute").asInt(),
-                    jsonNode.get("seconds").asInt());
-        }
-        parkingSpotService.advertiseByOwner(parkingSpot, freeUntil, advertisedAsFree);
+    public void advertiseByOwner(@RequestBody RequestParkingSpotUntil requestParkingSpotUntil) throws ParkingSpotNotFound {
+        parkingSpotService.advertiseByOwner(requestParkingSpotUntil);
     }
 
     @GetMapping

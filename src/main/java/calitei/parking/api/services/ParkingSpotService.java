@@ -6,6 +6,7 @@ import calitei.parking.api.error.ExceptionUtility;
 import calitei.parking.api.error.exceptions.AlreadyExistsException;
 import calitei.parking.api.error.exceptions.ParkingSpotNotFound;
 import calitei.parking.api.error.exceptions.ParkingSpotNotFreeException;
+import calitei.parking.api.models.parkingSpot.RequestParkingSpotUntil;
 import calitei.parking.api.repositories.MethodType;
 import calitei.parking.api.repositories.ParkingSpotRepository;
 import org.springframework.stereotype.Service;
@@ -32,23 +33,25 @@ public class ParkingSpotService {
     }
 
 
-    public void setFreeParkingSpot(ParkingSpot parkingSpot, LocalDateTime freeUntil) throws ParkingSpotNotFound {
+    public void setFreeParkingSpot(int lotNumber) throws ParkingSpotNotFound {
 
         // TODO validate that the user who sets free this lot is the one who reserved it or the owner
         // Principal currentUser = request.getUserPrincipal();  RequestService request to be inserted into controller and service method
         // if(currentUser.getId() == parkingSpot.getOwner().getId()) { ownerOverride(parkingSpot) }else{
         // if(!currentUser.getId() == parkingSpot.getReservedBy().getId()) { //you are not the one who reserved the lot}
-
+        ParkingSpot parkingSpot = getParkingSpotByLotNumber(lotNumber);
         if (parkingSpot.isFreeToReserve()) {
             // parking lot is already free
         } else {
             parkingSpot.setFreeToReserve(true);
-            parkingSpot.setFreeToReserveUntil(freeUntil);
+            parkingSpot.setFreeToReserveUntil(parkingSpot.getAdvertiseAsFreeUntil());
             parkingSpot.setReservedBy(null);
             parkingSpot.setReservedByName(null);
             parkingSpotRepository.save(parkingSpot);
         }
         //    }
+
+
     }
 
     public List<ParkingSpot> getParkingSpots(){
@@ -61,21 +64,25 @@ public class ParkingSpotService {
                         .createErrorMessage("ParkingSpot", Integer.toString(lotNumber), MethodType.UPDATE)));
     }
 
-    public void reserveParkingSpot(User reservee, int lotNumber, LocalDateTime reservedUntil) throws ParkingSpotNotFound, ParkingSpotNotFreeException {
-        ParkingSpot parkingSpot = getParkingSpotByLotNumber(lotNumber);
+    public void reserveParkingSpot(User reservee, RequestParkingSpotUntil requestParkingSpotUntil) throws ParkingSpotNotFound, ParkingSpotNotFreeException {
+        ParkingSpot parkingSpot = getParkingSpotByLotNumber(requestParkingSpotUntil.getLotNumber());
+        requestParkingSpotUntil.setUntilWhen();
         if(!parkingSpot.isFreeToReserve()) {
             throw new ParkingSpotNotFreeException(
                     String.format("The parking spot with lot number %s is not free!", parkingSpot.getLotNumber()));
         }
         parkingSpot.setReservedBy(reservee);
         parkingSpot.setFreeToReserve(false);
-        parkingSpot.setFreeToReserveUntil(reservedUntil);
+        parkingSpot.setFreeToReserveUntil(requestParkingSpotUntil.getUntilWhen());
         parkingSpot.setReservedByName(reservee.getFirstName() + " " + reservee.getLastName());
         parkingSpotRepository.save(parkingSpot);
     }
 
-    public void setOwner(User owner, int lotNumber) throws ParkingSpotNotFound {
+    public void setOwner(User owner, int lotNumber) throws ParkingSpotNotFound, AlreadyExistsException {
         ParkingSpot parkingSpot = getParkingSpotByLotNumber(lotNumber);
+        if(parkingSpot.getOwner() != null) {
+            throw new AlreadyExistsException("ParkingSpot already has owner");
+        }
         parkingSpot.setFreeToReserve(false);
         parkingSpot.setFreeToReserveUntil(null);
         parkingSpot.setAdvertiseAsFreeByOwner(false);
@@ -93,14 +100,16 @@ public class ParkingSpotService {
         parkingSpotRepository.save(parkingSpot);
     }
 
-    public void advertiseByOwner(ParkingSpot parkingSpot, LocalDateTime freeUntil, boolean advertiseByOwner){
+    public void advertiseByOwner(RequestParkingSpotUntil requestParkingSpotUntil) throws ParkingSpotNotFound {
         // TODO validate that the user who advertises as free is the owner
         // Principal currentUser = request.getUserPrincipal();  RequestService request to be inserted into controller and service method
         // if(!(currentUser.getId() == parkingSpot.getOwner().getId())) { //you are not the owner }else{
-        parkingSpot.setAdvertiseAsFreeByOwner(advertiseByOwner);
-        parkingSpot.setAdvertiseAsFreeUntil(freeUntil);
-        parkingSpot.setFreeToReserve(advertiseByOwner);
-        parkingSpot.setFreeToReserveUntil(freeUntil);
+        ParkingSpot parkingSpot = getParkingSpotByLotNumber(requestParkingSpotUntil.getLotNumber());
+        parkingSpot.setAdvertiseAsFreeByOwner(true);
+        requestParkingSpotUntil.setUntilWhen();
+        parkingSpot.setAdvertiseAsFreeUntil(requestParkingSpotUntil.getUntilWhen());
+        parkingSpot.setFreeToReserve(true);
+        parkingSpot.setFreeToReserveUntil(requestParkingSpotUntil.getUntilWhen());
         parkingSpot.setReservedBy(null);
         parkingSpot.setReservedByName(null);
         parkingSpotRepository.save(parkingSpot);
