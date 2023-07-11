@@ -24,7 +24,7 @@ public class ParkingSpot {
     @Column(name="lot_number")
     private int lotNumber;
     @Column(name="free_to_reserve")
-    private boolean freeToReserve = false;
+    private boolean freeToReserve = true;
     @Column(name="free_to_reserve_until")
     private LocalDateTime freeToReserveUntil;
     @Column(name="owner_name")
@@ -32,7 +32,7 @@ public class ParkingSpot {
     @Column(name="reserved_by_name")
     private String reservedByName;
     @Column(name="advertise_as_free_by_owner")
-    private boolean advertiseAsFreeByOwner = false;
+    private boolean advertiseAsFreeByOwner = true;
     @Column(name="advertise_as_free_until")
     private LocalDateTime advertiseAsFreeUntil;
 

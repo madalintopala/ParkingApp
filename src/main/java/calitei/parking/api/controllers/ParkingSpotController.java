@@ -7,12 +7,9 @@ import calitei.parking.api.models.parkingSpot.RequestParkingSpotUntil;
 import calitei.parking.api.services.ParkingSpotService;
 import calitei.parking.api.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 
 @RestController
@@ -30,8 +27,9 @@ public class ParkingSpotController {
 
 
     @GetMapping
-    public List<ParkingSpot> getParkingSpots(){
-        return parkingSpotService.getParkingSpots();
+    @RequestMapping("/all")
+    public List<ParkingSpot> getAllParkingSpots(){
+        return parkingSpotService.getAllParkingSpots();
     }
 
     @GetMapping
@@ -54,16 +52,14 @@ public class ParkingSpotController {
         parkingSpotService.setOwner(owner, lotNumber);
     }
 
-//     TODO: need to implement action to get the currently logged in details first
-//    @PostMapping
-//    @RequestMapping("/reserveExistingUser")
-//    public void reserveParkingSpotExistingUser(@RequestBody RequestParkingSpotUntil requestParkingSpotUntil) throws
-//            ParkingSpotNotFound, UserNotFoundException, ParkingSpotNotFreeException {
-//
-////        User reservee = get currently logged in user
-////        parkingSpotService.reserveParkingSpot(reservee, requestParkingSpotUntil);
-//
-//    }
+
+    @PostMapping
+    @RequestMapping("/reserveExistingUser")
+    public void reserveParkingSpotExistingUser(@RequestBody RequestParkingSpotUntil requestParkingSpotUntil) throws
+            ParkingSpotNotFound, UserNotFoundException, ParkingSpotNotFreeException {
+        parkingSpotService.reserveParkingSpot(requestParkingSpotUntil);
+
+    }
 
 
 

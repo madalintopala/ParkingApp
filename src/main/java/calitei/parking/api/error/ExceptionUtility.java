@@ -20,4 +20,8 @@ public class ExceptionUtility {
         }
         return errorMessage;
     }
+
+    public static String createErrorMessage(String paramType, String paramName, String customMessage){
+        return paramType + " with ID " + paramName + " " + customMessage;
+    }
 }

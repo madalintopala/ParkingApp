@@ -42,7 +42,7 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) throws UserNotFoundException {
-        return userRepository.getUserByEmail(email).orElseThrow(() ->
+        return userRepository.findByEmail(email).orElseThrow(() ->
                 new UserNotFoundException(ExceptionUtility.createErrorMessage("User", email, MethodType.UPDATE)));
     }
 
@@ -66,7 +66,7 @@ public class UserService {
                             .createErrorMessage("User", emailOrPhoneNumber, MethodType.UPDATE)));
 
         } else if (emailRegexPattern.matcher(emailOrPhoneNumber).matches()) {
-            user = userRepository.getUserByEmail(emailOrPhoneNumber)
+            user = userRepository.findByEmail(emailOrPhoneNumber)
                     .orElseThrow(() -> new UserNotFoundException(ExceptionUtility
                     .createErrorMessage("User", emailOrPhoneNumber, MethodType.UPDATE)));
         }
