@@ -17,30 +17,28 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/create")
-    public void createUser(@RequestBody User user) throws UserAlreadyExistsException {
-        userService.createUser(user);
-    }
+//    Deprecated - use AuthService to register new user
+//    @PostMapping("/create")
+//    public void createUser(@RequestBody User user) throws UserAlreadyExistsException {
+//        userService.createUser(user);
+//    }
 
-    @PostMapping("/login")
-    public User logInUserByEmailOrPhoneNumber(@RequestBody LoginRequest loginRequest) throws UserNotFoundException {
-        return userService.logInUserByEmailOrPhoneNumber(loginRequest.getEmailOrPhoneNumber(), loginRequest.getPassword());
-    }
+//    Deprecated - use AuthService to login
+//    @PostMapping("/login")
+//    public User logInUserByEmailOrPhoneNumber(@RequestBody LoginRequest loginRequest) throws UserNotFoundException {
+//        return userService.logInUserByEmailOrPhoneNumber(loginRequest.getEmailOrPhoneNumber(), loginRequest.getPassword());
+//    }
 
     @GetMapping("/getAll")
     public List<User> getUsers(){
         return userService.getUsers();
     }
 
-    @GetMapping("/getByLastName/{lastName}")
-    @ResponseBody
+    @GetMapping
+    @RequestMapping("/getByLastName/{lastName}")
     public User getUserByLastName(@PathVariable String lastName) throws UserNotFoundException {
         return userService.getUserByLastName(lastName);
     }
 
-    @GetMapping("/getById/{id}")
-    @ResponseBody
-    public User getUserById(@PathVariable String id){
-        return userService.getUserById(Integer.parseInt(id));
-    }
+
 }
