@@ -65,13 +65,13 @@ public class ParkingSpotController {
 
     @PostMapping
     @RequestMapping("/setFree")
-    public void setFreeParkingSpot(@RequestBody int lotNumber) throws ParkingSpotNotFound {
+    public void setFreeParkingSpot(@RequestBody int lotNumber) throws ParkingSpotNotFound, ParkingSpotException {
         parkingSpotService.setFreeParkingSpot(lotNumber);
     }
 
     @PostMapping
     @RequestMapping("/advertiseByOwner")
-    public void advertiseByOwner(@RequestBody RequestParkingSpotUntil requestParkingSpotUntil) throws ParkingSpotNotFound {
+    public void advertiseByOwner(@RequestBody RequestParkingSpotUntil requestParkingSpotUntil) throws ParkingSpotNotFound, NotOwnerException {
         parkingSpotService.advertiseByOwner(requestParkingSpotUntil);
     }
 
@@ -79,5 +79,11 @@ public class ParkingSpotController {
     @RequestMapping("/freeParkingSpots")
     public List<ParkingSpot> getFreeParkingSpots(){
         return parkingSpotService.getFreeParkingSpots();
+    }
+
+    @PostMapping
+    @RequestMapping("/takeBackByOwner")
+    public void takeBackByOwner(@RequestBody int lotNumber) throws ParkingSpotNotFound, NotOwnerException {
+        parkingSpotService.ownerOverride(lotNumber);
     }
 }

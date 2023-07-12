@@ -1,8 +1,6 @@
 package calitei.parking.api.error;
 
-import calitei.parking.api.error.exceptions.AlreadyExistsException;
-import calitei.parking.api.error.exceptions.NotFoundException;
-import calitei.parking.api.error.exceptions.ParkingSpotNotFreeException;
+import calitei.parking.api.error.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -35,8 +33,14 @@ public class ContentExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ParkingSpotNotFreeException.class)
-    public final ResponseEntity<ExceptionResponse> handleException(ParkingSpotNotFreeException ex){
+    @ExceptionHandler(ParkingSpotException.class)
+    public final ResponseEntity<ExceptionResponse> handleException(ParkingSpotException ex){
+        ExceptionResponse exceptionResponse = new ExceptionResponse(ex.getMessage(), new Date(), HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotOwnerException.class)
+    public final ResponseEntity<ExceptionResponse> handleException(NotOwnerException ex){
         ExceptionResponse exceptionResponse = new ExceptionResponse(ex.getMessage(), new Date(), HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
