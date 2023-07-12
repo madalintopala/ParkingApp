@@ -65,21 +65,6 @@ public class User implements UserDetails {
     private Role role;
 
 
-
-//    public User(String firstName, String lastName, String email, String password, String phoneNumber) {
-//
-//        this.firstName = firstName;
-//        this.lastName = lastName;
-//        this.email = email;
-//        this.password = password;
-//        this.phoneNumber = phoneNumber;
-//    }
-
-    public void reserveParkingSpot(ParkingSpot parkingSpot){
-        parkingSpotsReserved.add(parkingSpot);
-    }
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
